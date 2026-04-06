@@ -28,6 +28,29 @@
                 background-color: hsl(223, 10%, 14%);
             }
 
+            #student-info{
+                position: fixed;
+                bottom: 20px;
+                left: 20px;
+                color: hsl(223, 10%, 50%);
+                display: flex;
+                flex-direction: column;
+
+                z-index: -1;
+
+                pointer-events: none;
+                -webkit-user-drag: none;
+                -moz-user-select: none;
+                user-select: none;
+                -webkit-user-select: none;
+                -ms-user-select: none;
+            }
+            #student-info p{
+                font-family: system-ui, sans-serif;
+                line-height: 150%;
+                margin: 0px;
+            }
+
             #main{
                 display: flex;
                 flex-direction: column;
@@ -67,7 +90,7 @@
             
                 display: flex;
 
-                background-color: transparent;
+                background-color: hsl(223, 10%, 14%);
                 padding: 7px 10px;
                 margin: 0;
                 border: 1px solid hsla(0, 0%, 100%, 15%);
@@ -193,7 +216,13 @@
             </section>
         </main>
 
+        <div id="student-info">
+            <p><strong>Name: </strong>Lemon Foxmere</p>
+            <p><strong>Email: </strong>lemonfoxmere@ucsc.edu</p>
+            <p><strong>Notes to Grader: </strong>None</p>
+        </div>
+
         <script src="asg0.js"></script>
-        <script src="lib/cuon-matrix-cse160.js"></script>
+        <script src="../lib/cuon-matrix-cse160.js"></script>
     </body>
 </html>
