@@ -1,0 +1,447 @@
+<!-- *************************************************************
+
+    Live Hosted Submission Link:
+
+
+ ************************************************************ -->
+
+<!DOCTYPE html>
+<html lang="en" style="width: 100%; height: 100%; padding: 0 30px; margin: 0; box-sizing: border-box;">
+    <head>
+        <meta charset="utf-8" />
+        <title>Draw a point (1)</title>
+
+        <style>
+            *{
+                box-sizing: border-box;
+            }
+
+            html {
+                width: 100%;
+                height: 100%;
+                padding: 0 30px;
+                margin: 0;
+            }
+
+            body {
+                width: 100%;
+                height: 100%;
+                padding: 0;
+                margin: 0;
+                display: flex;
+                align-items: center;
+                flex-direction: column;
+                background-color: hsl(223, 10%, 14%);
+            }
+
+            #student-info{
+                position: fixed;
+                bottom: 20px;
+                left: 20px;
+                color: hsl(223, 10%, 50%);
+                display: flex;
+                flex-direction: column;
+                width: 300px;
+
+                z-index: -1;
+
+                pointer-events: none;
+                -webkit-user-drag: none;
+                -moz-user-select: none;
+                user-select: none;
+                -webkit-user-select: none;
+                -ms-user-select: none;
+            }
+            #student-info p{
+                font-family: system-ui, sans-serif;
+                line-height: 150%;
+                margin: 0px;
+            }
+
+            #main{
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+
+                row-gap: 20px;
+                
+                width: min(100%, 500px);
+                padding: 50px 0px;
+                margin: auto 0px;
+            }
+
+            canvas{
+                width: min(100%, 400px);
+                aspect-ratio: 1/1;
+                border-radius: 10px;
+            }
+
+            #input-field{
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                row-gap: 5px;
+            }
+            .input-container{
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                column-gap: 10px;
+            }
+
+            .labeled-input{
+                display: flex;
+                align-items: center;
+                column-gap: 5px;
+                flex: 1;
+            }
+            label{
+                width: 100%;
+                font-family: system-ui, sans-serif;
+                color: white;
+                font-size: 16px;
+                white-space: nowrap;
+            }
+            #hsl-label, #hex-label, #debug-label{
+                opacity: 0.5;
+            }
+            input:not([type="range"]), select{
+                -webkit-appearance: none;
+                appearance: none;
+                width: 100%;
+
+                display: flex;
+
+                background-color: hsl(223, 10%, 14%);
+                padding: 7px 10px;
+                margin: 0;
+                border: 1px solid hsla(0, 0%, 100%, 15%);
+                border-radius: 8px;
+
+                font-family: system-ui, sans-serif;
+                color: white;
+            }
+            input[type="number"] {
+                -webkit-appearance: none;
+                -moz-appearance: textfield;
+                appearance: textfield;
+            }
+            input[type="number"]::-webkit-inner-spin-button,
+            input[type="number"]::-webkit-outer-spin-button {
+                display: none;
+            }
+
+            select{
+                cursor: pointer;
+                background-color: hsl(223, 10%, 14%);
+            }
+
+            #color-picker {
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                column-gap: 10px;
+            }
+
+            #sliders {
+                display: flex;
+                flex-direction: column;
+                row-gap: 10px;
+                flex: 1;
+            }
+
+            .slider-row {
+                display: flex;
+                align-items: center;
+                column-gap: 20px;
+            }
+
+            .slider-row label {
+                width: 40px;
+
+                flex-shrink: 0;
+                text-align: left;
+                font-weight: 700;
+            }
+
+            input[type="range"] {
+                -webkit-appearance: none;
+                appearance: none;
+                flex: 1;
+                height: 24px;
+                padding: 0;
+                margin: 0;
+                
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+            }
+
+            input[type="range"]::-webkit-slider-runnable-track {
+                background: transparent;
+                height: 24px;
+                border-radius: 6px;
+
+                padding: 2px;
+            }
+
+            input[type="range"]::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                height: 100%;
+                aspect-ratio: 1/1;
+
+                border-radius: 4px;
+                background: transparent;
+                cursor: pointer;
+                box-shadow: 0 0 5px hsl(223, 10%, 14%);
+
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+
+                border: 1px solid hsla(0, 0%, 100%, 30%)
+            }
+
+            input[type="range"]::-moz-range-track {
+                height: 24px;
+                border-radius: 6px;
+            }
+
+            input[type="range"]::-moz-range-thumb {
+                height: 18px;
+                width: 18px;
+
+                border-radius: 4px;
+                background: transparent;
+                cursor: pointer;
+                box-shadow: 0 0 5px hsl(223, 10%, 14%);
+
+                border: 1px solid hsla(0, 0%, 100%, 30%)
+            }
+
+            #preview {
+                height: 100%;
+                aspect-ratio: 1/1;
+                border-radius: 8px;
+            }
+
+            #debug-info {
+                width: 100%;
+
+                font-family: system-ui, sans-serif;
+                color: white;
+            }
+
+            #color-info {
+                width: 100%;
+
+                display: flex;
+                align-items: center;
+                column-gap: 15px;
+                font-family: system-ui, sans-serif;
+                color: white;
+            }
+
+            #copy-buttons {
+                display: flex;
+                column-gap: 10px;
+                margin-left: auto;
+            }
+
+            #copy-hex {
+                background: none;
+                border: none;
+                color: white;
+                opacity: 0.5;
+                cursor: pointer;
+                font-family: system-ui, sans-serif;
+                padding: 0;
+                text-decoration: underline;
+                font-size: 16px;
+            }
+
+            #copy-hex:hover #copy-hex:disabled {
+                opacity: 0.8;
+            }
+            #copy-hex:disabled{
+                pointer-events: none;
+            }
+
+            .row-inputs {
+                width: 100%;
+                display: flex;
+                column-gap: 10px;
+            }
+
+            #other-sliders {
+                margin-top: 10px;
+            }
+
+            .slider-block {
+                display: flex;
+                flex-direction: column;
+                row-gap: 5px;
+                flex: 1;
+            }
+
+            input[type="range"].plain {
+                flex: none;
+                
+                background: hsla(0, 0%, 100%, 0.1);
+                height: 32px;
+                border-radius: 8px;
+            }
+
+            input[type="range"].plain::-webkit-slider-runnable-track {
+                height: 32px;
+                padding: 4px;
+            }
+
+            input[type="range"].plain::-webkit-slider-thumb {
+                background: hsla(0, 0%, 100%, 0.5);
+                width: 16px;
+                height: 24px;
+
+                border: none;
+                outline: none;
+
+                border-radius: 4px;
+
+                box-shadow: 0 0 5px hsl(223, 10%, 14%);
+            }
+
+            input[type="range"].plain::-moz-range-track {
+                background: hsla(0, 0%, 100%, 0.08);
+                height: 32px;
+                border-radius: 8px;
+            }
+
+            input[type="range"].plain::-moz-range-thumb {
+                background: hsla(0, 0%, 100%, 0.5);
+                
+                width: 16px;
+                height: 24px;
+                
+                border: none;
+                outline: none;
+
+                border-radius: 4px;
+
+                box-shadow: 0 0 5px hsl(223, 10%, 14%);
+            }
+
+            #brush-selector{
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                row-gap: 5px;
+            }
+
+            button{
+                -webkit-appearance: none;
+                appearance: none;
+                width: 100%;
+            
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                background-color: hsla(0, 0%, 100%, 10%);
+                border: none;
+                padding: 10px 10px;
+                margin: 0;
+                border-radius: 8px;
+
+                font-family: system-ui, sans-serif;
+                font-size: 16px;
+                color: white;
+                
+                cursor: pointer;
+            }
+
+            button:active{
+                opacity: 0.8;
+            }
+            button.selected{
+                background-color: white;
+                color: hsl(223, 10%, 14%);
+            }
+        </style>
+    </head>
+
+    <body onload="main()">
+
+        <main id="main">
+            <canvas id="webgl" width="400" height="400">
+                Please use a browser that supports "canvas"
+            </canvas>
+
+            <!-- color sliders -->
+            <!-- <div id="debug-info"><span id="debug-label"></span></div> -->
+            <div id="color-picker">
+                <div id="sliders">
+                    <div class="slider-row">
+                        <label>Hue</label>
+                        <input type="range" id="hue" min="0" max="360" value="137">
+                    </div>
+                    <div class="slider-row">
+                        <label>Sat</label>
+                        <input type="range" id="sat" min="0" max="100" value="100">
+                    </div>
+                    <div class="slider-row">
+                        <label>Lum</label>
+                        <input type="range" id="lum" min="0" max="100" value="77">
+                    </div>
+                </div>
+                <div id="preview"></div>
+            </div>
+            
+            <div id="color-info">
+                <span id="hsl-label"></span>
+                <span id="hex-label"></span>
+            </div>
+
+            <!-- other sliders -->
+            <div id="other-sliders" class="row-inputs">
+                <div class="slider-block">
+                    <label>Brush Size</label>
+                    <input type="range" class="plain" id="brush-size" min="1" max="50" value="10">
+                </div>
+                <div class="slider-block">
+                    <label>Circle Brush Sides</label>
+                    <input type="range" class="plain" id="circle-sides" min="3" max="12" value="5">
+                </div>
+            </div>
+
+            <div id="brush-selector">
+                <label>Brush Setting</label>
+                <div class="row-inputs">
+                    <button id="point-brush">Point</button>
+                    <button id="triangle-brush">Triangle</button>
+                    <button id="circle-brush">Circle</button>
+                    <button id="color-jit">LSD Mode</button>
+                </div>
+            </div>
+
+            <div class="row-inputs">
+                <button id="picture">Draw Picture</button>
+                <button id="clear">Clear Canvas</button>
+            </div>
+        </main>
+
+        <div id="student-info">
+            <p><strong>Name: </strong>Lemon Foxmere</p>
+            <p><strong>Email: </strong>lemonfoxmere@ucsc.edu</p>
+            <p><strong>Notes to Grader: </strong>Be ready to be wow'ed by my brand new LSD mode and modern UI design!</p>
+        </div>
+
+        <script src="lib/webgl-utils.js"></script>
+        <script src="lib/webgl-debug.js"></script>
+        <script src="lib/cuon-utils.js"></script>
+        <script src="lib/Point.js"></script>
+        <script src="lib/Triangle.js"></script>
+        <script src="lib/Circle.js"></script>
+        <script src="lib/Picture.js"></script>
+        <script src="src/HelloPoint1.js"></script>
+        <script src="src/ColoredPoints.js"></script>
+    </body>
+</html>
