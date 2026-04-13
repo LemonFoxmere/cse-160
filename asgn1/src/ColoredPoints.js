@@ -84,6 +84,11 @@ function setupDomUI() {
     document.querySelector("#picture").onclick = () => {
         g_jitter_clr = false;
         document.querySelector("#color-jit").classList.remove("selected");
+        const img = document.querySelector("#carrot-img");
+        const rect = canvas.getBoundingClientRect();
+        img.style.top = rect.top + "px";
+        img.style.left = (rect.right + 20) + "px";
+        img.style.display = "block";
         requestAnimationFrame(renderPicture); // wait for state to clear
     };
     document.querySelector("#clear").onclick = () => {
@@ -236,6 +241,7 @@ function convertCoordEvtToGL(ev) {
 function renderAllShapes() {
     // const start = performance.now();
 
+    document.querySelector("#carrot-img").style.display = "none";
     gl.clear(gl.COLOR_BUFFER_BIT);
 
     for (let shape of g_shapesList) {
